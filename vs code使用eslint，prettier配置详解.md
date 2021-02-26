@@ -1,0 +1,227 @@
+## 前言
+
+**网上五花八门的配置过旧，内容不详**。本文力争做到以下几点：
+
+- eslint核心概念及规则详解
+- prettier常见配置详解
+- vs code配置普通node/js项目规则校验及格式化
+- vs code配置vue项目规则校验及格式化
+- 常见配置问题分析及解决
+
+配置基于**vscode 1.52.1版本**。
+
+## ESLint
+
+### 是什么
+
+它是一个**插件化**的JavaScript**代码检测工具**；它的目标是**保证代码的一致性和避免错误**。
+
+> 代码检查是一种静态的分析，常用于查找有问题的代码，并且不依赖于具体的编码风格。对大多数编程语言来说都会有代码检查，一般来说编译程序会内置检查工具。
+>
+> JavaScript 是一个动态的弱类型语言，在开发中比较容易出错。因为没有编译程序，为了寻找 JavaScript 代码错误通常需要在执行过程中不断调试。像 ESLint 这样的可以让程序员在编码的过程中发现问题而不是在执行的过程中。
+>
+> ESLint 的初衷是为了让程序员可以创建自己的检测规则。ESLint 的所有规则都被设计成可插入的。ESLint 的内置规则与其他的插件并没有什么区别。为了便于使用，ESLint 内置了一些规则，当然，你可以在使用过程中自定义规则。
+>
+> **ESLint 并不推荐任何编码风格。**
+
+具体详细介绍可以查看：[关于ESLint](https://eslint.org/docs/about/)。
+
+ESLint主要解决以下问题：
+
+1. 找出语法错误，避免低级bug；
+
+2. 提示删除多余的代码；
+
+3. 确保代码遵守最佳实践；
+
+4. 统一团队代码风格。
+
+### 怎么用
+
+具体安装和使用，不针对任何编辑器以及IDE，仅介绍ESLint本身的规则和用法，后面章节会介绍如何集成到vs code中使用。
+
+#### 安装
+
+1. 创建一个新项目，如果在已有项目中使用可跳过该步骤
+
+```bash
+mkdir eslint-learn
+cd eslint-learn
+npm init -y
+```
+
+2. 在项目中安装eslint
+
+```bash
+npm install eslint --save-dev
+```
+
+3. 初始化eslint的配置文件
+
+```bash
+npx eslint --init
+```
+
+初始化过程中的选项如下：
+
+![](https://raw.githubusercontent.com/swift-fs/imgs/master/docs/20210225174137.png)
+
+一步一步完成后，会在项目的根目录下生成**.eslintrc.js文件**：
+
+```javascript
+module.exports = {
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "rules": {
+    }
+};
+```
+
+4. 新建一个`index.js`文件，写入如下代码：
+
+```javascript
+// 一共两个问题：变量声明了未被使用；语句多出一个分号
+var name = "eslint-learn";;
+```
+
+然后，命令行通过`npx eslint`来检测`index.js`文件：
+
+![](https://raw.githubusercontent.com/swift-fs/imgs/master/docs/20210225181754.png)
+
+可以看到，通过eslint检测后，问题出现的位置以及原因被指出，然后可以通过`npx eslint --fix`尝试进行错误和警告修复：
+
+![image-20210225181911319](/Users/swift/Library/Application Support/typora-user-images/image-20210225181911319.png)
+
+eslint其他可用命令选项参考：[eslint命令行用法](https://eslint.org/docs/user-guide/command-line-interface)
+
+运行后，多余分号已被去除，但是依旧存在一个错误：**部分错误eslint并无法自动修复**，详情参考：[eslint规则列表](https://eslint.org/docs/rules/)
+
+### 配置参数解释
+
+- `parser`，指定eslint使用的语法解析器，默认使用的`espree`。可选的解析器有：`esprima`，`@babel/eslint-parser`，`@typescript-eslint/parser`，具体可在npm仓库搜索查看使用。
+- `parserOptions`，解析器配置参数。默认选项如下：
+
+```javascript
+ "parseOptions": {
+    // 代码类型：script(默认), module
+    "sourceType": "script",
+    // es 版本号，默认为 5，也可以是用年份，比如 2015 (同 6)
+    "ecamVersion": 6,
+    // es 特性配置
+    "ecmaFeatures": {
+        "globalReturn": true, // 允许在全局作用域下使用 return 语句
+        "impliedStrict": true, // 启用全局 strict mode 
+        "jsx": true // 启用 JSX
+    },
+```
+
+- `globals`，声明全局变量。eslint会检测未声明的变量，并报错：
+
+```javascript
+{
+  "globals": {
+  // 声明一个名为age的全局变量
+    "age": false // true表示该变量为 writeable，而 false 表示 readonly，也可以直接使用writeable和readonly
+  }
+}
+```
+
+- `env`，引入一个环境中所有的全局变量可用的环境参考：[可用的环境](https://eslint.org/docs/user-guide/configuring/language-options#specifying-environments)。
+- `rules`，配置校验规则，可用规则参考：[规则列表](https://eslint.org/docs/rules/)。
+
+> 每一个规则格式为：`规则名:[错误级别,附加选项]`或者`规则名:错误级别`
+>
+> eslint有三种错误级别：
+>
+> - "off" 或 0：关闭规则
+> - `"warn"` 或 `1` ： 警告，不会导致代码退出
+> - "error" 或 2：开启规则，当被触发的时候，程序会退出
+
+简单例子如下：
+
+```javascript
+"rules": {
+  // 语句后面必须带分号，否则报错
+  "semi": ["error", "always"],
+  // 字符串必须是双引号，否则报错  
+  "quotes": ["error", "double"]
+}
+```
+
+- `extends`，继承已存在的规则。
+
+```javascript
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "eslint-config-standard",
+  ]
+}
+```
+
+> `eslint:` 开头的是 ESLint 官方的扩展，一共有两个：[`eslint:recommended`](https://github.com/eslint/eslint/blob/v6.0.1/conf/eslint-recommended.js) 启用内置推荐规则、[`eslint:all`](https://github.com/eslint/eslint/blob/master/conf/eslint-all.js)启用内置所有规则，不推荐使用。
+>
+> `plugin:` 开头的是规则存在插件中，格式为`plugin:包名/配置名`，也可以直接在 `plugins` 属性中进行设置，后面会讲到。
+>
+>  `eslint-config-` 开头，来自单独的npm配置包，使用时可以省略`eslint-config`，如上面的可以简写为`standard`（共享配置包需要安装才能使用）
+
+- `root`，eslint从当前目录开始搜索配置文件，若遇到root参数为`true`的配置文件，会停止搜索，一般为true。
+
+### 常用规则
+
+常用基础规则集合
+
+- [eslint-config-standard](https://www.npmjs.com/package/eslint-config-standard)，[JavaScript Standard Style 风格指南](https://github.com/standard/standard/blob/master/docs/RULES-zhcn.md#javascript-standard-style)
+- [eslint-config-airbnb](https://www.npmjs.com/package/eslint-config-airbnb)，[Airbnb JavaScript 风格指南](https://github.com/lin-123/javascript)
+
+一般情况下，上面两个规则集一起使用。
+
+### 插件
+
+官方提供的规则只能检测标准的JavaScript代码，如果写的是Vue单文件组件，eslint的规则就没办法了。eslint通过插件的机制，来定制自己的规则进行检查。eslint的插件和扩展一样有固定的命名格式，以`eslint-plugin-`开头，使用时可省略。
+
+如需要支持Vue语法的检测：
+
+```bash
+npm install eslint-plugin-vue --save-dev
+```
+
+在`.eslintrc.js`文件中添加：
+
+```javascript
+module.exports = {
+	"plugins":[
+		"vue",
+	]
+}
+```
+
+添加后可支持Vue单文件语法的检测。
+
+## Prettier
+
+### 是什么
+
+待完善。
+
+### 怎么用
+
+待完善。
+
+## VSCode配置ESLint
+
+待完善。
+
