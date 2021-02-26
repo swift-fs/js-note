@@ -193,7 +193,7 @@ eslint其他可用命令选项参考：[eslint命令行用法](https://eslint.or
 
 官方提供的规则只能检测标准的JavaScript代码，如果写的是Vue单文件组件，eslint的规则就没办法了。eslint通过插件的机制，来定制自己的规则进行检查。eslint的插件和扩展一样有固定的命名格式，以`eslint-plugin-`开头，使用时可省略。
 
-如需要支持Vue语法的检测：
+例如，需要支持Vue语法的检测：
 
 ```bash
 npm install eslint-plugin-vue --save-dev
