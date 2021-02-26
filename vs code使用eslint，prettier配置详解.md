@@ -102,7 +102,7 @@ var name = "eslint-learn";;
 
 可以看到，通过eslint检测后，问题出现的位置以及原因被指出，然后可以通过`npx eslint --fix`尝试进行错误和警告修复：
 
-![image-20210225181911319](/Users/swift/Library/Application Support/typora-user-images/image-20210225181911319.png)
+![](https://raw.githubusercontent.com/swift-fs/imgs/master/docs/20210225181904.png)
 
 eslint其他可用命令选项参考：[eslint命令行用法](https://eslint.org/docs/user-guide/command-line-interface)
 
