@@ -191,7 +191,7 @@ eslint其他可用命令选项参考：[eslint命令行用法](https://eslint.or
 
 ### 插件
 
-官方提供的规则只能检测标准的JavaScript代码，如果写的是Vue单文件组件，eslint的规则就没办法了。eslint通过插件的机制，来定制自己的规则进行检查。eslint的插件和扩展一样有固定的命名格式，以`eslint-plugin-`开头，使用时可省略。
+官方提供的规则只能检测标准的JavaScript代码，如果写的是Vue单文件组件，eslint的规则就没办法了。**eslint通过插件的机制，来定制自己的规则进行检查**。eslint的插件和扩展一样有固定的命名格式，以`eslint-plugin-`开头，使用时可省略。
 
 例如，需要支持Vue语法的检测：
 
@@ -215,13 +215,125 @@ module.exports = {
 
 ### 是什么
 
-待完善。
+prettier是一个支持多种编程语言的代码格式化工具。其格式化原理非常简单：**prettier把代码（无论什么风格样式）转成抽象语法树（AST，不含任何代码样式），在AST的基础上重新格式化代码。prettier注重的是代码风格样式，不关注语法问题。**
 
 ### 怎么用
 
-待完善。
+仅演示如何使用prettier，和eslint的结合使用，后文会讲到。
+
+### 安装
+
+1. 在上面演示项目中，直接安装：
+
+```bash
+npm install prettier --save-dev
+```
+
+2. 创建配置文件
+
+```bash
+echo {} > .prettierrc.json
+```
+
+3. 创建忽略文件`.prettierignore`，当使用prettier进行格式化时会自动跳过，语法规则和`.gitignore`相同：
+
+```
+touch .prettierignore
+```
+
+### 使用
+
+命令很简单：
+
+```
+npx prettier --write 需要格式化的文件
+```
+
+例如，格式化`index.js文件`：
+
+```bash
+npx prettier --write ./index.js
+```
+
+格式化项目下所有文件:
+
+```bash
+npx prettier --write .
+```
+
+格式化指定文件夹下的文件：
+
+```bash
+npx prettier --write ./app/
+```
 
 ## VSCode配置ESLint
+
+### 安装
+
+安装插件：[vscode-eslint插件](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+
+### 配置
+
+前提：项目中必须已经安装过`eslint包`。
+
+- 保存时使用已安装可用插件修复代码，包括eslint插件
+
+```json
+"editor.codeActionsOnSave": {
+    "source.fixAll": true
+ }
+```
+
+- 保存时仅使用eslint插件修复代码
+
+```json
+"editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+}
+```
+
+- 配置需要验证的语言标识符，默认如下，一般不用配置：
+
+```json
+"eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown"
+  ]
+```
+
+新版本配置非常简单，配置之后就可以通过项目下的`eslint包`和`.eslintrc.json`发现和修复代码，同时有语法错误的地方会有红色下划波浪线提示。
+
+## VSCode配置Prettier
+
+### 安装
+
+安装插件：[vscode-prettier插件](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+### 配置
+
+前提：项目中已经安装过`prettier包`。
+
+- 设置默认格式化的插件为`prettier`：
+
+```json
+"editor.defaultFormatter": "esbenp.prettier-vscode"
+```
+
+- 打开保存时自动格式化
+
+```json
+"editor.formatOnSave": true,
+```
+
+**小结**：通过以上配置后，vscode既可以自动修复语法问题又可以格式化样式。但是，eslint同时也有代码风格检测的部分规则，会和prettier格式化后产生冲突。现在，只需要eslint负责语法部分，prettier负责格式问题就能解决冲突。
+
+## ESLint和Prettier的结合使用
 
 待完善。
 
