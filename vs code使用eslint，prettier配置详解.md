@@ -221,7 +221,7 @@ prettier是一个支持多种编程语言的代码格式化工具。其格式化
 
 仅演示如何使用prettier，和eslint的结合使用，后文会讲到。
 
-### 安装
+#### 安装
 
 1. 在上面演示项目中，直接安装：
 
@@ -241,7 +241,7 @@ echo {} > .prettierrc.json
 touch .prettierignore
 ```
 
-### 使用
+#### 使用
 
 命令很简单：
 
@@ -265,6 +265,36 @@ npx prettier --write .
 
 ```bash
 npx prettier --write ./app/
+```
+
+#### 配置
+
+prettier仅支持很少的配置项，力争做到一致性，在配置文件`.prettierrc.json`文件中进行配置，以下是可用的所有配置：
+
+- `printWidth`指定代码每行长度，超出后会换行，默认为`80`
+- `tabWidth`缩进时的宽度，默认为`2`
+- `useTabs`是否使用制表符代替空格，默认为`false`
+- `semi`语句是否有分号，默认`false`
+- `singleQuote`字符串是否使用单引号，默认`false`，`jsx`中此属性不生效
+- `jsxSingleQuote`在`jsx`中是否使用单引号，默认`false`
+- `bracketSpacing`大括号两边是否有空格，默认`true`
+- `jsxBracketSameLine`在jsx语法中标签闭合位置，默认为`false`，独占一行
+- `arrowParens`箭头函数参数的圆括号，可选值`always|avoid`，默认`always`总是添加圆括号
+
+简单常用配置：
+
+```json
+{
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "bracketSpacing": true,
+  "arrowParens": "always"
+}
+
 ```
 
 ## VSCode配置ESLint
@@ -293,7 +323,7 @@ npx prettier --write ./app/
 }
 ```
 
-- 配置需要验证的语言标识符，默认如下，一般不用配置：
+- 配置需要验证的语言标识符，默认如下，**一般不用配置**：
 
 ```json
 "eslint.probe": [
@@ -335,5 +365,29 @@ npx prettier --write ./app/
 
 ## ESLint和Prettier的结合使用
 
-待完善。
+通过[eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)配置，可以去除eslint自带的风格检测，进而启用prettier的格式化风格。
+
+### 安装
+
+```shell
+npm install eslint-config-prettier --save-dev
+```
+
+
+
+### 配置
+
+在`.eslintrc.js`下配置规则继承：
+
+```js
+{
+	extends: ['eslint:recommended', 'prettier'],
+}
+```
+
+现在，再保存时，会默认使用eslint进行语法检测，prettier进行代码格式化，两者互不冲突。
+
+
+
+
 
