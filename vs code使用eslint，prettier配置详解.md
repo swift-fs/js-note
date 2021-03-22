@@ -110,7 +110,7 @@ eslint其他可用命令选项参考：[eslint命令行用法](https://eslint.or
 
 ### 配置参数解释
 
-- `parser`，指定eslint使用的语法解析器，默认使用的`espree`。可选的解析器有：`esprima`，`@babel/eslint-parser`，`@typescript-eslint/parser`，具体可在npm仓库搜索查看使用。
+- `parser`，指定eslint使用的语法解析器，默认使用的`espree`。可选的解析器有：`esprima`，`@babel/eslint-parser(一般使用该解析器，可以使用试实验性的语法不报错)`，`@typescript-eslint/parser(使用ts时必须选用该解析器)`，具体可在npm仓库搜索查看使用。
 - `parserOptions`，解析器配置参数。默认选项如下：
 
 ```javascript
